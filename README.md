@@ -1,6 +1,8 @@
 # 🗳️ Simulador de Eleições Presidenciais Brasileiras
 
 > **Status do Projeto:** 🚧 Em desenvolvimento — Versão Beta
+>
+> VERSÃO BETA, CONTENDO ALGUNS BUGS VISUAIS: https://gustavorabutske.github.io/simulador-eleicoes/
 
 Um projeto interativo feito com **HTML**, **CSS** e **JavaScript** puro, que simula uma eleição presidencial no Brasil usando um **mapa interativo** dos estados.
 
