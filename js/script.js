@@ -1,5 +1,3 @@
-import { estadosInfo, totalVotosPorEstado } from './bandeirasEvotos.js';
-
 const estadosInfo = {
   // Norte
   "BR-AC": {
