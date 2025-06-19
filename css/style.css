@@ -1,275 +1,283 @@
-  body {
+/* Estilos gerais (adapte conforme seu gosto) */
+body {
+    font-family: Arial, sans-serif;
     margin: 0;
-    background-color: white;
-  }
-
-  .wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .container{
-    width: 80%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 50px;
-  }
-  svg{
-    width: 50%;
-  }
-
-  path {
-    fill: #333638;
-    stroke: white;
-    stroke-width: 1px;
-  }
-  path:hover {
-    fill: purple;
-    stroke: red;
-    stroke-width: 3px;
-    transition: fill 0.4s;
-  }
-  .tooltip {
-    pointer-events: none;
-    position: absolute;
-    font-size: 18px;
-    text-align: center;
-    background: white;
-    padding: 10px 15px;
-    z-index: 5;
-    height: 30px;
-    line-height: 30px;
-    margin: 0 auto;
-    color: #21669e;
-    border-radius: 5px;
-    transform: translateX(-50%);
-    display: none;
-  }
-  .tooltip.active {
-    display: block;
-  }
-  .tooltip:after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    top: 100%;
-    width: 0;
-    height: 0;
-    margin-left: -10px;
-    border-left: 10px solid transparent;
-    border-right: 10px solid transparent;
-    border-top: 10px solid white;
-  }
-
-  
-  .form-group {
-    margin-bottom: 10px;
-  }
-
-  .candidato-form {
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-  }
-
-  /* Div dos resultados*/
-  .resultados {
-    display: flex;
-    flex-direction: column; /* empilha os cards */
-    gap: 15px;
-    align-items: center;
-  }
-  
-  .card {
-    border: 2px solid #000;
-    padding: 10px;
-    border-radius: 12px;
-    text-align: center;
-    width: 180px;
-    background-color: #f9f9f9;
-    box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.1);
-  }
-  
-  .card img {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: 50%; /* deixa a imagem redonda */
-    margin-bottom: 8px;
-  }
-
-
-/*Seção de cadastro de candidatos*/
-/* Details discreto, centralizado e com margens nas laterais */
-details#cadastro-details {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 1000px;
-  margin: 30px auto;
-  border: 1px solid black;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
-  font-family: Arial, sans-serif;
-}
-
-/* Título do details */
-details summary {
-  cursor: pointer;
-  font-size: 16px;
-  font-weight: bold;
-  user-select: none;
-  margin-bottom: 10px;
-}
-
-/* Centralizar botão */
-details#cadastro-details button {
-  margin: 20px auto 0;
-  display: block;
-  padding: 10px 20px;
-  border-radius: 6px;
-  border: none;
-  background-color: #444;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-details#cadastro-details button:hover {
-  background-color: #222;
-}
-
-/* Formulários lado a lado */
-.form-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  gap: 20px;
-  flex-wrap: nowrap; /* impede que quebre para baixo */
-}
-
-.candidato-form {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #fff;
-}
-
-.candidato-form .preview {
-  margin-top: 8px;
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 1px solid #999;
-}
-
-
-.header {
-  background-color: white;
-  position: relative;
-  padding: 0.01rem 1rem; 
-  box-shadow: 0 1px 0 #ddd;
+    background-color: #f4f4f4;
+    color: #333;
 }
 
 .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
-.header h1 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin: 0;
-  color: #333;
+header.header {
+    background-color: #333;
+    color: white;
+    padding: 10px 0;
 }
 
-.icons a {
-  margin-left: 1rem;
-  color: #333;
-  font-size: 1.5rem;
-  transition: color 0.3s ease;
+header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.icons a:hover {
-  color: #0077b5; /* Azul do LinkedIn como destaque no hover */
+header .icons a {
+    color: white;
+    margin-left: 15px;
+    font-size: 1.5rem;
 }
 
-/* Linha inferior animada */
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(270deg, #ff0080, #7928ca, #2afadf, #00ff6a);
-  background-size: 600% 600%;
-  animation: gradientAnimation 10s ease infinite;
-  border-radius: 2px;
+/* Formulário de Configuração */
+details {
+    background: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
 }
 
-@keyframes gradientAnimation {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+summary {
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
 }
 
+.config-section {
+    margin: 15px 0;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}
+
+.form-wrapper {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.candidato-form {
+    flex: 1;
+    border: 1px solid #ccc;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.form-group-radio label {
+    margin-right: 20px;
+}
+
+.preview {
+    max-width: 100px;
+    margin-top: 10px;
+    display: block;
+    height: 100px;
+    object-fit: cover;
+}
+
+button#save-config {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+}
+
+/* Resultados Globais */
+.resultados {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 15px;
+    text-align: center;
+    width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-bottom: 5px solid;
+}
+
+/* Card discreto para "Outros Candidatos" */
+.card-outros {
+    border-color: #ccc !important; /* Remove a borda colorida */
+    background-color: #f9f9f9;
+}
+.card-outros h4 {
+    color: #666;
+}
+
+
+.card h4 {
+    margin: 0 0 10px 0;
+}
+
+.card img {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+/* Mapa */
+svg#mapa-brasil {
+    width: 100%;
+    height: auto;
+    stroke: #fff;
+    stroke-width: 1;
+}
+
+.estado {
+    cursor: pointer;
+    transition: opacity 0.3s;
+    fill: #ccc; /* Cor padrão */
+}
+
+.estado:hover {
+    opacity: 0.7;
+}
+
+/* Tooltip */
+.tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    pointer-events: none; /* Impede que o tooltip bloqueie eventos do mouse */
+    display: none; /* Começa escondido */
+    z-index: 1000;
+}
+.tooltip.active {
+    display: block; /* Mostra o tooltip */
+}
+.tooltip h5 {
+    margin: 0 0 8px 0;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #555;
+}
+.tooltip p {
+    margin: 4px 0;
+}
+
+
+/* Modal */
 .modal {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex; justify-content: center; align-items: center;
-  z-index: 9999;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .modal.hidden {
-  display: none;
+    display: none;
 }
 
 .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  width: 400px;
-  text-align: center;
-  position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 900px;
+    border-radius: 8px;
+    position: relative;
 }
 
-.modal-content img.bandeira {
-  width: 120px;
-  margin: 10px auto;
-  display: block;
-}
-.candidatos-modal {
-  display: flex;
-  gap: 10px; /* espaço entre os cards */
-  justify-content: center; /* centraliza horizontalmente */
-  flex-wrap: wrap; /* permite que quebrem linha se não couberem */
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 15px;
 }
 
-.candidatos-modal .card {
-  margin: 0; /* tiramos o margin vertical */
-  flex: 1 1 auto;
-  max-width: 150px; /* define uma largura máxima para os cards */
+.bandeira {
+    width: 100px;
+    height: auto;
+    border: 1px solid #ddd;
 }
 
 .close {
-  position: absolute;
-  top: 10px; right: 20px;
-  font-size: 28px;
-  cursor: pointer;
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
+.candidatos-modal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
 
-  
+.voto-slider {
+    width: 100%;
+}
+
+/* Resultados Regionais */
+#resultados-regionais-container {
+    background: #fff;
+    padding: 20px;
+    margin-top: 30px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.resultados-regionais {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.regiao-card {
+    border: 1px solid #eee;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+.regiao-card h3 {
+    margin-top: 0;
+    border-bottom: 2px solid #ddd;
+    padding-bottom: 5px;
+}
