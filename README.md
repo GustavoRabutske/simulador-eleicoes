@@ -2,6 +2,8 @@
 
 > **Status do Projeto:** 🚧 Em desenvolvimento — Versão Beta
 
+Link para testar: https://gustavorabutske.github.io/simulador-eleicoes/
+
 Um projeto interativo feito com **HTML**, **CSS** e **JavaScript** puro, que simula uma eleição presidencial no Brasil usando um **mapa interativo** dos estados.
 
 Este projeto foi desenvolvido com o objetivo de demonstrar minhas habilidades em desenvolvimento front-end, manipulação de DOM, interatividade com SVG e lógica aplicada em interfaces visuais.
