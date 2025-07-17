@@ -21,31 +21,48 @@ function atualizarTodosResultados() {
  * Salva a configuração dos candidatos e inicia a simulação.
  */
 function salvarConfiguracao() {
+    // Lê o tipo de turno e limpa os dados anteriores
     appState.turno = document.querySelector('input[name="tipo-turno"]:checked').value;
     appState.candidatos = [];
     appState.votosPorEstado = {};
 
+    // Define uma imagem padrão
+    const imagemPadrao = 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
+
+    // Lê os dados de cada formulário de candidato
     document.querySelectorAll('.candidato-form').forEach((form, index) => {
+        const nome = form.querySelector('.nome').value || `Candidato ${index + 1}`;
+        const partido = form.querySelector('.partido').value || `P${index + 1}`;
+        const cor = form.querySelector('.cor').value;
+        const fotoInformada = form.querySelector('.foto').value;
+        
         appState.candidatos.push({
-            nome: form.querySelector('.nome').value || `Candidato ${index + 1}`,
-            partido: form.querySelector('.partido').value || `P${index + 1}`,
-            cor: form.querySelector('.cor').value,
-            foto: form.querySelector('.foto').value || 'https://via.placeholder.com/100',
+            nome,
+            partido,
+            cor,
+            foto: fotoInformada || imagemPadrao,
             id: index
         });
     });
 
+    // Verifica o tipo de turno para adicionar "Outros" 
     if (appState.turno === '1o') {
+        // Adiciona a opção "Outros" para o 1º turno
         appState.candidatos.push({
-            nome: "Outros", partido: "Candidatos", cor: "#999999",
-            foto: "https://cdn-icons-png.flaticon.com/512/847/847969.png",
-            id: 2, isOutros: true
+            nome: "Outros",
+            partido: "Candidatos",
+            cor: "#999999",
+            foto: imagemPadrao,
+            id: appState.candidatos.length,
+            isOutros: true
         });
     }
-    
+
+    // Fecha os detalhes da configuração e atualiza a interface
     domElements.configDetails.open = false;
     atualizarTodosResultados();
 }
+
 
 /**
  * Abre e preenche o modal para um estado específico.
