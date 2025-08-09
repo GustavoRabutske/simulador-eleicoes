@@ -1,7 +1,7 @@
 // js/main.js
 
 import { estadosInfo, totalVotosPorEstado } from './constants.js';
-import { appState, calcularVotosNacionais } from './state.js';
+import { appState, calcularVotosNacionais, salvarEstadoNoNavegador, carregarEstadoDoNavegador, limparDadosSalvos } from './state.js';
 import { domElements, atualizarResultadosGlobaisUI, atualizarResultadosRegionaisUI, atualizarCoresMapa, atualizarTooltip, renderizarModalContent, lerVotosDoModal } from './ui.js';
 
 // --- LÓGICA DE CONTROLE ---
@@ -16,6 +16,27 @@ function atualizarTodosResultados() {
     atualizarResultadosRegionaisUI();
     atualizarCoresMapa();
 }
+
+/**
+ * Preenche os campos do formulário de configuração com base nos dados do appState.
+ * Útil ao carregar dados salvos.
+ */
+function preencherFormularioConfig() {
+    document.querySelector(`input[name="tipo-turno"][value="${appState.turno}"]`).checked = true;
+
+    document.querySelectorAll('.candidato-form').forEach((form, index) => {
+        const candidato = appState.candidatos[index];
+        if (candidato && !candidato.isOutros) {
+            form.querySelector('.nome').value = candidato.nome;
+            form.querySelector('.partido').value = candidato.partido;
+            form.querySelector('.cor').value = candidato.cor;
+            form.querySelector('.foto').value = candidato.foto;
+            form.querySelector('.preview').src = candidato.foto;
+            form.querySelector('.preview').style.display = 'block';
+        }
+    });
+}
+
 
 /**
  * Salva a configuração dos candidatos e inicia a simulação.
@@ -47,7 +68,6 @@ function salvarConfiguracao() {
 
     // Verifica o tipo de turno para adicionar "Outros" 
     if (appState.turno === '1o') {
-        // Adiciona a opção "Outros" para o 1º turno
         appState.candidatos.push({
             nome: "Outros",
             partido: "Candidatos",
@@ -61,6 +81,7 @@ function salvarConfiguracao() {
     // Fecha os detalhes da configuração e atualiza a interface
     domElements.configDetails.open = false;
     atualizarTodosResultados();
+    salvarEstadoNoNavegador(); // Salva no navegador
 }
 
 
@@ -94,6 +115,7 @@ function abrirModalEstado(estadoId) {
 function atualizarVotosDoModal(estadoId) {
     appState.votosPorEstado[estadoId] = lerVotosDoModal(estadoId);
     atualizarTodosResultados();
+    salvarEstadoNoNavegador(); // Salva a alteração no navegador
 }
 
 /**
@@ -125,8 +147,34 @@ function setupModalListeners(estadoId) {
 
 // --- INICIALIZAÇÃO E EVENT LISTENERS GLOBAIS ---
 
+/**
+ * Limpa os dados salvos e recarrega a página.
+ */
+function reiniciarSimulacao() {
+    if (confirm("Tem certeza que deseja reiniciar a simulação? Todos os dados salvos serão perdidos.")) {
+        limparDadosSalvos();
+        window.location.reload();
+    }
+}
+
 function inicializar() {
+    // Tenta carregar os dados salvos
+    const dadosCarregados = carregarEstadoDoNavegador();
+
+    if (dadosCarregados && appState.candidatos.length > 0) {
+        console.log("Dados da simulação anterior carregados.");
+        preencherFormularioConfig();
+        domElements.configDetails.open = false; // Mantém a configuração fechada
+    } else {
+        console.log("Nenhum dado salvo. Iniciando com valores padrão.");
+        salvarConfiguracao(); // Inicia com valores padrão se não houver dados
+    }
+    
+    // Atualiza a UI com os dados (carregados ou padrão)
+    atualizarTodosResultados();
+
     domElements.saveConfigBtn.addEventListener('click', salvarConfiguracao);
+    domElements.resetSimulacaoBtn.addEventListener('click', reiniciarSimulacao); // Adiciona listener
 
     document.querySelectorAll('#mapa-brasil .estado').forEach(path => {
         path.addEventListener('click', () => abrirModalEstado(path.id));
@@ -135,8 +183,10 @@ function inicializar() {
     });
 
     document.addEventListener('mousemove', (e) => {
-        domElements.tooltip.style.left = `${e.pageX + 15}px`;
-        domElements.tooltip.style.top = `${e.pageY - 15}px`;
+        if (domElements.tooltip.classList.contains('active')) {
+            domElements.tooltip.style.left = `${e.pageX + 15}px`;
+            domElements.tooltip.style.top = `${e.pageY - 15}px`;
+        }
     });
 
     domElements.closeModalBtn.addEventListener('click', () => {
@@ -150,9 +200,6 @@ function inicializar() {
             preview.style.display = 'block';
         });
     });
-
-    // Inicia a simulação com valores padrão
-    salvarConfiguracao();
 }
 
 // Inicia a aplicação quando o DOM estiver pronto.

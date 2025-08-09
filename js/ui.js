@@ -20,6 +20,7 @@ export const domElements = {
     inputTotalVotos: document.getElementById('input-total-votos'),
     candidatosModal: document.getElementById('candidatos-modal'),
     closeModalBtn: document.getElementById('closeModal'),
+    resetSimulacaoBtn: document.getElementById('reset-simulacao')
 };
 
 /**
