@@ -15,10 +15,11 @@
 	<header class="header">
 		<div class="container">
 			<h1>Simulador de eleições</h1>
-			<div class="icons">
-				<a href="https://github.com/gustavorabutske" target="_blank"><i class="fab fa-github"></i></a>
-				<a href="https://www.linkedin.com/in/gustavo-castro-06668b231/" target="_blank"><i
-						class="fab fa-linkedin"></i></a>
+			<div style="display: flex; align-items: center;">
+				<div class="icons">
+					<a href="https://github.com/gustavorabutske" target="_blank"><i class="fab fa-github"></i></a>
+				</div>
+				<button id="theme-toggle" class="theme-toggle" title="Alternar Tema Escuro">🌙</button>
 			</div>
 		</div>
 	</header>
@@ -46,7 +47,7 @@
 							<select class="candidato-padrao">
 								<option value="">-- Escolher --</option>
 								<option value="lula">Lula (PT)</option>
-								<option value="bolsonaro">Bolsonaro (PL)</option>
+								<option value="bolsonaro">Flávio Bolsonaro (PL)</option>
 								<option value="tarcisio">Tarcísio de Freitas (Republicanos)</option>
 								<option value="michelle">Michelle Bolsonaro (PL)</option>
 								<option value="boulos">Guilherme Boulos (PSOL)</option>
@@ -74,7 +75,12 @@
 						</label>
 					</div>
 					<div class="form-group">
-						<label>Foto (URL): <input type="text" class="foto"></label>
+						<label>Foto:</label>
+						<div style="display: flex; gap: 10px; margin-bottom: 10px;">
+							<input type="file" class="foto-upload" accept="image/*" style="flex: 1;" />
+							<button type="button" class="limpar-foto-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Limpar</button>
+						</div>
+						<label>Ou cole uma URL: <input type="text" class="foto"></label>
 						<img class="preview" src="" alt="Prévia" />
 					</div>
 				</div>
@@ -116,7 +122,12 @@
 						</label>
 					</div>
 					<div class="form-group">
-						<label>Foto (URL): <input type="text" class="foto"></label>
+						<label>Foto:</label>
+						<div style="display: flex; gap: 10px; margin-bottom: 10px;">
+							<input type="file" class="foto-upload" accept="image/*" style="flex: 1;" />
+							<button type="button" class="limpar-foto-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Limpar</button>
+						</div>
+						<label>Ou cole uma URL: <input type="text" class="foto"></label>
 						<img class="preview" src="" alt="Prévia" />
 					</div>
 				</div>
@@ -139,10 +150,10 @@
 					foto: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Foto_oficial_de_Luiz_In%C3%A1cio_Lula_da_Silva_%28ombros%29_denoise.jpg/500px-Foto_oficial_de_Luiz_In%C3%A1cio_Lula_da_Silva_%28ombros%29_denoise.jpg"
 				},
 				bolsonaro: {
-					nome: "Bolsonaro",
+					nome: "Flávio Bolsonaro",
 					partido: "PL",
 					cor: "#0000FF",
-					foto: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Jair_Bolsonaro_2019_Portrait_%283x4_cropped%29.jpg/330px-Jair_Bolsonaro_2019_Portrait_%283x4_cropped%29.jpg"
+					foto: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Foto_oficial_de_Fl%C3%A1vio_Bolsonaro_%28v._AgSen%29.jpg/330px-Foto_oficial_de_Fl%C3%A1vio_Bolsonaro_%28v._AgSen%29.jpg"
 				},
 				tarcisio: {
 					nome: "Tarcísio",
@@ -185,21 +196,74 @@
 				});
 			});
 
-			// Atualizar preview da imagem ao digitar
+			// Atualizar preview da imagem ao digitar URL
 			document.querySelectorAll(".foto").forEach(input => {
 				input.addEventListener("input", function () {
 					const container = this.closest(".candidato-form");
-					container.querySelector(".preview").src = this.value;
+					const preview = container.querySelector(".preview");
+					if (this.value) {
+						preview.src = this.value;
+						preview.style.display = 'block';
+						// Limpa o upload se existir URL
+						const upload = container.querySelector(".foto-upload");
+						if (upload) upload.value = '';
+					}
+				});
+			});
+
+			// Upload de imagem personalizada
+			document.querySelectorAll(".foto-upload").forEach(input => {
+				input.addEventListener("change", function (e) {
+					const file = e.target.files[0];
+					if (!file) return;
+					
+					const container = this.closest(".candidato-form");
+					const preview = container.querySelector(".preview");
+					const fotoUrlInput = container.querySelector(".foto");
+					
+					// Limpa o campo de URL
+					fotoUrlInput.value = '';
+					
+					// Converte para base64
+					const reader = new FileReader();
+					reader.onload = function(e) {
+						preview.src = e.target.result;
+						preview.style.display = 'block';
+					};
+					reader.readAsDataURL(file);
+				});
+			});
+
+			// Limpar foto
+			document.querySelectorAll(".limpar-foto-btn").forEach(btn => {
+				btn.addEventListener("click", function () {
+					const container = this.closest(".candidato-form");
+					const preview = container.querySelector(".preview");
+					const fotoUrlInput = container.querySelector(".foto");
+					const fotoUpload = container.querySelector(".foto-upload");
+					
+					preview.src = '';
+					preview.style.display = 'none';
+					fotoUrlInput.value = '';
+					if (fotoUpload) fotoUpload.value = '';
 				});
 			});
 		</script>
 
+	<div class="mapaEresultado">
+    <div id="resultados-globais" class="resultados">
+    </div>
 
-		<div class="mapaEresultado">
-			<div id="resultados-globais" class="resultados">
-			</div>
+    <div>
+        <div class="busca-container">
+            <div style="position: relative; flex: 1;">
+                <input type="text" id="busca-estado" placeholder="Buscar estado (ex: São Paulo, SP)..." />
+                <div id="sugestoes-estados" class="sugestoes-estados" style="display: none;"></div>
+            </div>
+        </div>
 
-			<svg id="mapa-brasil" xmlns:mapsvg="http://mapsvg.com" xmlns:dc="http://purl.org/dc/elements/1.1/"
+        <div class="mapa-container">
+            <svg id="mapa-brasil" xmlns:mapsvg="http://mapsvg.com" xmlns:dc="http://purl.org/dc/elements/1.1/"
 				xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg"
 				xmlns="http://www.w3.org/2000/svg" viewbox="0 0 612 639">
 				<path
@@ -284,7 +348,15 @@
 					d="m 433.61257,282.08114 -5.36,1.42 -1.74,1.34 -2.56,1.1 -1.55,0 -4.53,1 -2.52,2.08 -1.78,0.9 -0.46,-0.24 -1.51,-2.62 -0.55,-0.03 -0.51,3.3 -0.69,0.08 -3.35,-0.68 -3.13,-1.47 0.56,-1.56 -0.22,-0.74 -4.53,0.53 -2.76,-0.34 -0.56,0.54 -0.3,1 -0.75,0.75 -1.14,-0.05 -0.61,-3.1 -1.11,-3.71 -1.04,-1.88 -1.15,-1.31 -1.18,0.97 -1.47,2.39 -1.63,5.94 -0.63,0.23 -4.07,-1.43 -3.09,-1.71 -3.93,-0.4 -2.2,-1.03 -2.4,-0.4 0.52,-2.34 1.22,-1.88 0.03,-1.71 -0.56,0.3 -1.81,2.09 -0.66,1.23 -0.2,1.88 -0.34,0.45 0,0 -0.8,-0.02 -0.96,-0.51 -0.98,-3.34 0.74,-2.76 -0.44,-3.05 -0.52,-0.58 -0.01,-1.57 0.47,-3.31 -1.1,-2.25 0.05,-0.5 0.82,-0.89 0.16,-0.87 -1.39,-1.34 -0.06,-0.86 1.88,-5.99 0.04,-2.95 0.54,-2.97 1.94,-5.29 0.37,-0.27 0.43,-0.85 0.44,-3.14 1.1,-1.25 0.56,-1.89 0.65,-1.02 0,0 1.62,-3.69 1.13,-4.45 1.15,-1.58 1.19,-1.1 1.21,-1.68 1.03,-1.92 1.37,-0.92 1.05,-0.16 0.73,-0.85 0.94,-1.54 0.18,-0.99 1.7,-3.24 1.09,-0.8 1.76,-5.15 0.66,-4.04 -0.15,-0.3 -0.74,-0.32 -1.67,-1.74 -0.6,-0.95 -0.16,-0.88 0.14,-0.57 1.41,-1.69 1.29,-2.1 -0.06,-2.67 -0.43,-2.18 0.19,-0.35 2.47,-1.78 3.41,-1.14 2.5,-1.21 0.24,-0.5 -0.15,-1.51 0.86,-1.27 1.51,-1.34 1.29,-0.15 0.19,-1.34 -0.29,-1.2 0.25,-0.46 1.46,-0.46 0.64,-0.48 0.93,-2.75 -1.02,-1.34 -0.09,-1.4 0.29,-0.28 0.97,-0.08 0.72,-0.37 0.37,-0.66 0.03,-0.64 -1.26,-1.17 -0.87,-0.14 -0.39,-0.31 -1.02,-1.66 -1.29,-0.12 -1.87,0.25 -2.29,-0.81 0,0 0.53,-0.64 2.62,-1.85 1.96,-0.53 0.87,0.05 2.78,1.52 1.4,0.08 0.95,-0.52 1.74,0.29 0.59,0.69 0.08,1.03 0.28,0.32 1.22,0.03 3.4,1.43 0.84,1.03 0.47,3.5 0.64,1.5 -0.21,3.72 0.23,1.08 0.67,1.13 -0.01,0.44 -1.77,6.15 -0.31,2.37 0.28,1 -0.25,1.59 -1.75,2.04 -1.76,0.67 -0.18,0.71 1.94,1.32 0.42,-0.27 1.37,0.24 0.25,0.35 0.11,0.88 -0.62,1.19 0.85,1.44 0.88,-0.07 3,4.16 0.91,0.85 2.28,3.02 2.14,-1.34 4.27,-0.94 1.8,1.22 0.08,1.75 -0.64,3.25 0.39,1.35 -3.39,0.35 -1.34,0.54 -0.57,0.55 -0.68,1.43 -0.73,2.68 0.37,1.3 -2.63,2.55 -0.26,0.7 0.2,0.42 2.08,0.29 0.94,0.69 0.74,1.59 0.06,1.66 0.62,1.04 3.88,1.95 0.09,0.53 -1.64,1.81 0.13,1.65 2.14,1.62 0.99,2.87 1.34,2 0.71,0.18 1.78,-0.21 1,0.3 0.82,0.44 0.61,0.82 1.28,0.66 0,0 2.94,0.21 0,0 -0.69,0.65 -0.22,0.98 -0.56,0.47 -3.82,2.02 -3.21,2.62 -0.19,0.37 1.29,1.8 -0.36,0.39 -1.01,0.27 -0.9,0.61 -1.52,3.49 -1.01,0.72 -0.5,1.16 0.23,0.92 1.86,1.95 3.59,0.67 1.87,0.99 0.05,0.76 -0.56,0.45 -2.04,0.81 -0.43,0.96 0.09,0.5 0.35,0.33 1.03,-0.18 0.92,0.29 0.58,0.51 0.29,0.64 -0.96,0.71 -1.15,0.42 -1.95,1.67 -0.19,0.85 -0.05,2.92 0.35,1.25 0.94,0.66 1.05,0.24 0.41,0.25 0.17,0.42 0.05,1.06 -1.36,2.38 z"
 					title="Tocantins" id="BR-TO" class="estado" />
 			</svg>
-		</div>
+        </div>
+
+        <div class="legenda-mapa">
+            <span>Menos Votos</span>
+            <div class="gradiente-legenda"></div>
+            <span>Mais Votos</span>
+        </div>
+    </div>
+	</div>
 		<div class="tooltip"></div>
 
 		<div id="resultados-regionais-container">
@@ -316,6 +388,10 @@
 	</footer>
 
 	<script type="module" src="js/main.js"></script>
+	<div id="toast" class="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toast-msg">Operação realizada!</span>
+</div>
 
 </body>
 

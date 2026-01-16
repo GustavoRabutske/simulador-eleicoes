@@ -20,8 +20,28 @@ export const domElements = {
     inputTotalVotos: document.getElementById('input-total-votos'),
     candidatosModal: document.getElementById('candidatos-modal'),
     closeModalBtn: document.getElementById('closeModal'),
-    resetSimulacaoBtn: document.getElementById('reset-simulacao')
+    resetSimulacaoBtn: document.getElementById('reset-simulacao'),
+    
+    // Novos Elementos
+    themeToggle: document.getElementById('theme-toggle'),
+    buscaInput: document.getElementById('busca-estado'),
+    toast: document.getElementById('toast'),
+    toastMsg: document.getElementById('toast-msg')
 };
+
+/**
+ * Exibe uma mensagem flutuante (Toast) de confirmação.
+ * @param {string} mensagem - O texto a ser exibido.
+ */
+export function mostrarToast(mensagem) {
+    if (domElements.toast && domElements.toastMsg) {
+        domElements.toastMsg.textContent = mensagem;
+        domElements.toast.classList.add('show');
+        setTimeout(() => {
+            domElements.toast.classList.remove('show');
+        }, 3000);
+    }
+}
 
 /**
  * Atualiza os cards com os resultados globais.
@@ -62,6 +82,9 @@ export function atualizarResultadosRegionaisUI() {
         'Sul': { totais: Array(appState.candidatos.length).fill(0), totalGeral: 0 },
     };
 
+    let totalVotosNacional = 0;
+
+    // 1. Agrega os votos e calcula o total nacional
     for (const estadoId in appState.votosPorEstado) {
         const info = estadosInfo[estadoId];
         if (info && votosPorRegiao[info.regiao]) {
@@ -70,51 +93,84 @@ export function atualizarResultadosRegionaisUI() {
                 if (regiaoData.totais[i] !== undefined) {
                     regiaoData.totais[i] += votos;
                     regiaoData.totalGeral += votos;
+                    totalVotosNacional += votos;
                 }
             });
         }
     }
     
     domElements.resultadosRegionaisContainer.innerHTML = '';
+    
+    // 2. Renderiza os cards
     for (const regiaoNome in votosPorRegiao) {
         const regiaoData = votosPorRegiao[regiaoNome];
         const regiaoCard = document.createElement('div');
         regiaoCard.className = 'regiao-card';
         
+        // Calcula o peso da região
+        const pesoRegiao = totalVotosNacional > 0 
+            ? ((regiaoData.totalGeral / totalVotosNacional) * 100).toFixed(1) 
+            : "0.0";
+
         let htmlCandidatos = '';
         appState.candidatos.forEach((c, i) => {
             const votos = regiaoData.totais[i];
-            const porc = regiaoData.totalGeral > 0 ? ((votos / regiaoData.totalGeral) * 100).toFixed(1) : "0.0";
-            htmlCandidatos += `<p><strong>${c.nome}:</strong> ${formatarNumero(votos)} (${porc}%)</p>`;
+            const porc = regiaoData.totalGeral > 0 
+                ? ((votos / regiaoData.totalGeral) * 100).toFixed(1) 
+                : "0.0";
+            
+            // Destaque visual simples para o vencedor da região
+            const isWinner = votos === Math.max(...regiaoData.totais) && votos > 0;
+            const style = isWinner ? `style="color:${c.cor}; font-weight:bold;"` : '';
+            
+            htmlCandidatos += `<p ${style}><strong>${c.nome}:</strong> ${formatarNumero(votos)} (${porc}%)</p>`;
         });
 
-        regiaoCard.innerHTML = `<h3>${regiaoNome}</h3>${htmlCandidatos}`;
+        // Adiciona o cabeçalho com o peso do colégio eleitoral
+        regiaoCard.innerHTML = `
+            <h3>
+                ${regiaoNome} 
+                <span style="font-size: 0.7em; color: #666; font-weight: normal; margin-left: 8px;">
+                    (${pesoRegiao}% do total)
+                </span>
+            </h3>
+            ${htmlCandidatos}
+        `;
         domElements.resultadosRegionaisContainer.appendChild(regiaoCard);
     }
 }
 
 /**
  * Pinta cada estado no mapa SVG com a cor do candidato vencedor.
+ * Adiciona feedback visual (borda) para estados modificados.
  */
 export function atualizarCoresMapa() {
+    // Reseta o estilo base
     document.querySelectorAll('#mapa-brasil .estado').forEach(path => {
         path.style.fill = '#ccc';
+        path.classList.remove('modificado'); 
     });
 
     for (const estadoId in appState.votosPorEstado) {
         const votos = appState.votosPorEstado[estadoId];
         const total = votos.reduce((a, b) => a + b, 0);
-        if (total === 0) continue;
+        
+        // Verifica se o estado tem votos registrados (foi modificado/carregado)
+        if (total > 0) {
+            const path = document.getElementById(estadoId);
+            if (path) {
+                // Adiciona classe para feedback visual (borda pontilhada/destaque)
+                path.classList.add('modificado');
 
-        const vencedorIndex = votos.indexOf(Math.max(...votos));
-        const vencedor = appState.candidatos[vencedorIndex];
-        const porcentagem = (votos[vencedorIndex] / total) * 100;
-        
-        const novaCor = hexParaRgbaComIntensidade(vencedor.cor, porcentagem);
-        
-        const path = document.getElementById(estadoId);
-        if (path) {
-            path.style.fill = novaCor;
+                const vencedorIndex = votos.indexOf(Math.max(...votos));
+                const vencedor = appState.candidatos[vencedorIndex];
+                
+                // Calcula a intensidade da cor baseada na porcentagem
+                const porcentagem = (votos[vencedorIndex] / total) * 100;
+                const novaCor = hexParaRgbaComIntensidade(vencedor.cor, porcentagem);
+                
+                path.style.fill = novaCor;
+            }
         }
     }
 }
@@ -179,11 +235,17 @@ export function renderizarModalContent(estadoId, totalVotosEstado) {
         card.innerHTML = `
             <h4>${candidato.nome} - ${candidato.partido}</h4>
             <img src="${candidato.foto}" alt="Foto de ${candidato.nome}">
-            <label>
-                <span id="porcentagem-texto-${index}">${porcentagemAtual}%</span>
-                <input type="range" min="0" max="100" step="0.1" value="${porcentagemAtual}" class="voto-slider" data-index="${index}" data-estado="${estadoId}" />
-            </label>
-            <p id="votos-candidato-${index}">${formatarNumero(votoAtual)} votos</p>
+            <div class="slider-container">
+                <div class="slider-label">
+                    <span class="slider-value" id="porcentagem-texto-${index}">${porcentagemAtual}%</span>
+                    <span class="slider-votos" id="votos-candidato-${index}">${formatarNumero(votoAtual)} votos</span>
+                </div>
+                <input type="range" min="0" max="100" step="0.1" value="${porcentagemAtual}" class="voto-slider" data-index="${index}" data-estado="${estadoId}" style="--slider-color: ${candidato.cor};" />
+                <div class="slider-range">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+            </div>
         `;
         domElements.candidatosModal.appendChild(card);
     });
