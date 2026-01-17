@@ -3,6 +3,8 @@
 import { estadosInfo, totalVotosPorEstado } from './constants.js';
 import { appState, calcularVotosNacionais, salvarEstadoNoNavegador, carregarEstadoDoNavegador, limparDadosSalvos } from './state.js';
 import { domElements, atualizarResultadosGlobaisUI, atualizarResultadosRegionaisUI, atualizarCoresMapa, atualizarTooltip, renderizarModalContent, lerVotosDoModal, mostrarToast } from './ui.js';
+import { exportarSimulacao, importarSimulacao, carregarSimulacaoCompartilhada } from './exportacao.js';
+import { atualizarTodosGraficos } from './graficos.js';
 
 // --- LÓGICA DE CONTROLE ---
 
@@ -15,6 +17,7 @@ function atualizarTodosResultados() {
     atualizarResultadosGlobaisUI(totais, totalGeral);
     atualizarResultadosRegionaisUI();
     atualizarCoresMapa();
+    atualizarTodosGraficos();
 }
 
 /**
@@ -27,6 +30,9 @@ function alternarTema() {
         domElements.themeToggle.textContent = isDark ? '☀️' : '🌙';
     }
     localStorage.setItem('temaEscuro', isDark);
+    
+    // Atualiza gráficos com novo tema
+    atualizarTodosGraficos();
 }
 
 /**
@@ -123,6 +129,7 @@ function ocultarSugestoes() {
  * Útil ao carregar dados salvos.
  */
 function preencherFormularioConfig() {
+    const imagemPadrao = 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
     document.querySelector(`input[name="tipo-turno"][value="${appState.turno}"]`).checked = true;
 
     document.querySelectorAll('.candidato-form').forEach((form, index) => {
@@ -147,6 +154,19 @@ function preencherFormularioConfig() {
                     if (fotoInput) fotoInput.value = candidato.foto;
                     if (fotoUpload) fotoUpload.value = '';
                 }
+                preview.style.display = 'block';
+            } else {
+                // Se não houver foto, usa a imagem padrão
+                preview.src = imagemPadrao;
+                preview.style.display = 'block';
+                if (fotoInput) fotoInput.value = '';
+                if (fotoUpload) fotoUpload.value = '';
+            }
+        } else {
+            // Se não houver candidato salvo, inicializa com imagem padrão
+            const preview = form.querySelector('.preview');
+            if (preview) {
+                preview.src = imagemPadrao;
                 preview.style.display = 'block';
             }
         }
@@ -303,6 +323,39 @@ function reiniciarSimulacao() {
     }
 }
 
+
+
+/**
+ * Configura os event listeners para exportação/importação.
+ */
+function configurarExportacaoImportacao() {
+    // Botões da seção de configuração
+    const btnExportarConfig = document.getElementById('btn-exportar-config');
+    const btnImportarConfig = document.getElementById('btn-importar-config');
+    const inputImportarConfig = document.getElementById('input-importar-config');
+    
+    // Botões da seção de configuração
+    if (btnExportarConfig) {
+        btnExportarConfig.addEventListener('click', exportarSimulacao);
+    }
+    
+    if (btnImportarConfig) {
+        btnImportarConfig.addEventListener('click', () => {
+            inputImportarConfig?.click();
+        });
+    }
+    
+    if (inputImportarConfig) {
+        inputImportarConfig.addEventListener('change', (e) => {
+            const arquivo = e.target.files[0];
+            if (arquivo) {
+                importarSimulacao(arquivo);
+                e.target.value = ''; // Limpa o input
+            }
+        });
+    }
+}
+
 // Variável para controle do Tooltip Mobile
 let ultimoEstadoClicado = null;
 
@@ -315,7 +368,17 @@ function inicializar() {
         domElements.themeToggle.addEventListener('click', alternarTema);
     }
 
-    // 2. Tenta carregar os dados salvos da simulação
+    // 2. Verifica se há simulação compartilhada na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const simulacaoCompartilhada = urlParams.get('simulacao');
+    if (simulacaoCompartilhada) {
+        if (carregarSimulacaoCompartilhada(simulacaoCompartilhada)) {
+            salvarEstadoNoNavegador();
+            mostrarToast("Simulação compartilhada carregada!");
+        }
+    }
+    
+    // 3. Tenta carregar os dados salvos da simulação
     const dadosCarregados = carregarEstadoDoNavegador();
 
     if (dadosCarregados && appState.candidatos.length > 0) {
@@ -327,12 +390,15 @@ function inicializar() {
         salvarConfiguracao(); 
     }
     
-    // 3. Atualiza a UI inicial
+    // 4. Atualiza a UI inicial
     atualizarTodosResultados();
 
-    // 4. Configura Event Listeners
+    // 5. Configura Event Listeners
     domElements.saveConfigBtn.addEventListener('click', salvarConfiguracao);
     domElements.resetSimulacaoBtn.addEventListener('click', reiniciarSimulacao);
+    
+    // Event listeners para novas funcionalidades
+    configurarExportacaoImportacao();
 
     // Listeners para busca com autocomplete
     if (domElements.buscaInput) {
@@ -434,6 +500,13 @@ function inicializar() {
 
     domElements.closeModalBtn.addEventListener('click', () => {
         domElements.modal.classList.add('hidden');
+    });
+    
+    // Fecha modal ao clicar fora
+    window.addEventListener('click', (e) => {
+        if (e.target === domElements.modal) {
+            domElements.modal.classList.add('hidden');
+        }
     });
     
     // Listener para URL de foto já está no HTML inline script

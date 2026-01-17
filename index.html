@@ -8,6 +8,7 @@
 	<title>Projeto - Simulador de eleição brasileiro</title>
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
 
 <body>
@@ -15,7 +16,10 @@
 	<header class="header">
 		<div class="container">
 			<h1>Simulador de eleições</h1>
-			<div style="display: flex; align-items: center;">
+			<div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+				<a href="sobre.html" class="btn-header" title="Sobre a Aplicação">
+					<i class="fas fa-info-circle"></i> <span class="btn-text">Sobre</span>
+				</a>
 				<div class="icons">
 					<a href="https://github.com/gustavorabutske" target="_blank"><i class="fab fa-github"></i></a>
 				</div>
@@ -43,7 +47,7 @@
 					<h3>Candidato 1</h3>
 
 					<div class="form-group">
-						<label>Selecionar candidato:
+						<label>Candidato pré-definido:
 							<select class="candidato-padrao">
 								<option value="">-- Escolher --</option>
 								<option value="lula">Lula (PT)</option>
@@ -64,7 +68,16 @@
 						<label>Partido: <input type="text" class="partido"></label>
 					</div>
 					<div class="form-group">
-						<label>Cor de campanha:
+						<label class="label-with-help">
+							<span>
+								Cor de campanha:
+								<div class="help-icon-container">
+									<i class="fas fa-question-circle help-icon"></i>
+									<div class="help-tooltip">
+										A cor de campanha é usada para identificar visualmente o candidato nos gráficos e resultados. Por exemplo, o PT tradicionalmente usa vermelho, enquanto o PL usa azul. Escolha uma cor que represente a identidade visual do candidato.
+									</div>
+								</div>
+							</span>
 							<select class="cor">
 								<option value="#FF0000">Vermelho</option>
 								<option value="#0000FF">Azul</option>
@@ -81,7 +94,7 @@
 							<button type="button" class="limpar-foto-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Limpar</button>
 						</div>
 						<label>Ou cole uma URL: <input type="text" class="foto"></label>
-						<img class="preview" src="" alt="Prévia" />
+						<img class="preview" src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Prévia" />
 					</div>
 				</div>
 
@@ -90,11 +103,11 @@
 					<h3>Candidato 2</h3>
 
 					<div class="form-group">
-						<label>Selecionar candidato:
+						<label>Candidato pré-definido:
 							<select class="candidato-padrao">
 								<option value="">-- Escolher --</option>
 								<option value="lula">Lula (PT)</option>
-								<option value="bolsonaro">Bolsonaro (PL)</option>
+								<option value="bolsonaro">Flávio Bolsonaro (PL)</option>
 								<option value="tarcisio">Tarcísio de Freitas (Republicanos)</option>
 								<option value="michelle">Michelle Bolsonaro (PL)</option>
 								<option value="boulos">Guilherme Boulos (PSOL)</option>
@@ -111,7 +124,16 @@
 						<label>Partido: <input type="text" class="partido"></label>
 					</div>
 					<div class="form-group">
-						<label>Cor de campanha:
+						<label class="label-with-help">
+							<span>
+								Cor de campanha:
+								<div class="help-icon-container">
+									<i class="fas fa-question-circle help-icon"></i>
+									<div class="help-tooltip">
+										A cor de campanha é usada para identificar visualmente o candidato nos gráficos e resultados. Por exemplo, o PT tradicionalmente usa vermelho, enquanto o PL usa azul. Escolha uma cor que represente a identidade visual do candidato.
+									</div>
+								</div>
+							</span>
 							<select class="cor">
 								<option value="#0000FF">Azul</option>
 								<option value="#FF0000">Vermelho</option>
@@ -128,17 +150,30 @@
 							<button type="button" class="limpar-foto-btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Limpar</button>
 						</div>
 						<label>Ou cole uma URL: <input type="text" class="foto"></label>
-						<img class="preview" src="" alt="Prévia" />
+						<img class="preview" src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Prévia" />
 					</div>
 				</div>
 			</div>
 
-			<button id="save-config">Salvar e Iniciar Simulação</button>
-			<button id="reset-simulacao" style="background-color: #f8f9fa; color: #6c757d; border-color: #f8f9fa; margin-left: 10px; font-size: 0.9rem; padding: 0.2rem 0.5rem; cursor: pointer;">Resetar</button>
-			<p style="font-size: 0.8rem; color: #666; margin-top: 1rem; display: flex; align-items: center;">
-			<i class="fas fa-triangle-exclamation" style="margin-right: 5px; color: #856404;"></i>
-			<span>Os dados da simulação são salvos automaticamente no seu navegador. Clique em resetar para limpar os dados</span>
-		</p>
+			<div class="config-actions">
+				<div class="config-buttons-primary">
+					<button id="save-config" class="btn-primary">Salvar e Iniciar Simulação</button>
+					<button id="reset-simulacao" class="btn-secondary">Resetar</button>
+				</div>
+				<div class="config-buttons-export">
+					<button id="btn-exportar-config" class="btn-export" title="Exportar Simulação">
+						<i class="fas fa-download"></i> <span>Exportar Simulação</span>
+					</button>
+					<button id="btn-importar-config" class="btn-import" title="Importar Simulação">
+						<i class="fas fa-upload"></i> <span>Importar Simulação</span>
+					</button>
+					<input type="file" id="input-importar-config" accept=".json" style="display: none;">
+				</div>
+			</div>
+			<p class="config-warning">
+				<i class="fas fa-triangle-exclamation"></i>
+				<span>Os dados da simulação são salvos automaticamente no seu navegador. Clique em resetar para limpar os dados</span>
+			</p>
 		</details>
 
 		<script>
@@ -181,9 +216,60 @@
 				}
 			};
 
+			// Mapeia os nomes dos candidatos para seus valores
+			const nomesCandidatos = {
+				"lula": "Lula (PT)",
+				"bolsonaro": "Flávio Bolsonaro (PL)",
+				"tarcisio": "Tarcísio de Freitas (Republicanos)",
+				"michelle": "Michelle Bolsonaro (PL)",
+				"boulos": "Guilherme Boulos (PSOL)",
+				"alckmin": "Geraldo Alckmin (PSB)"
+			};
+
+			// Função para atualizar as opções dos selects
+			function atualizarOpcoesSelects(selectAtual, valorAnterior, novoValor) {
+				const todosSelects = document.querySelectorAll(".candidato-padrao");
+				
+				todosSelects.forEach(select => {
+					if (select === selectAtual) return; // Pula o select que foi alterado
+					
+					// Se um candidato foi selecionado, remove-o dos outros selects
+					if (novoValor && novoValor !== "") {
+						const option = select.querySelector(`option[value="${novoValor}"]`);
+						if (option) {
+							option.style.display = "none";
+							option.disabled = true;
+						}
+					}
+					
+					// Se um candidato foi desmarcado, adiciona-o de volta aos outros selects
+					if (valorAnterior && valorAnterior !== "") {
+						const option = select.querySelector(`option[value="${valorAnterior}"]`);
+						if (option) {
+							option.style.display = "block";
+							option.disabled = false;
+						}
+					}
+				});
+			}
+
+			// Armazena os valores anteriores de cada select
+			const valoresAnteriores = new Map();
 
 			document.querySelectorAll(".candidato-padrao").forEach(select => {
+				// Guarda o valor inicial
+				valoresAnteriores.set(select, select.value);
+				
 				select.addEventListener("change", function () {
+					const valorAnterior = valoresAnteriores.get(this);
+					const novoValor = this.value;
+					
+					// Atualiza as opções dos outros selects
+					atualizarOpcoesSelects(this, valorAnterior, novoValor);
+					
+					// Guarda o novo valor
+					valoresAnteriores.set(this, novoValor);
+					
 					const candidatoSelecionado = candidatosPredefinidos[this.value];
 					if (!candidatoSelecionado) return;
 
@@ -196,7 +282,16 @@
 				});
 			});
 
+			// Inicializa escondendo opções que já estão selecionadas em outros selects
+			document.querySelectorAll(".candidato-padrao").forEach(select => {
+				const valorAtual = select.value;
+				if (valorAtual && valorAtual !== "") {
+					atualizarOpcoesSelects(select, null, valorAtual);
+				}
+			});
+
 			// Atualizar preview da imagem ao digitar URL
+			const imagemPadrao = 'https://cdn-icons-png.flaticon.com/512/847/847969.png';
 			document.querySelectorAll(".foto").forEach(input => {
 				input.addEventListener("input", function () {
 					const container = this.closest(".candidato-form");
@@ -207,6 +302,10 @@
 						// Limpa o upload se existir URL
 						const upload = container.querySelector(".foto-upload");
 						if (upload) upload.value = '';
+					} else {
+						// Se a URL for limpa, volta para a imagem padrão
+						preview.src = imagemPadrao;
+						preview.style.display = 'block';
 					}
 				});
 			});
@@ -242,11 +341,20 @@
 					const fotoUrlInput = container.querySelector(".foto");
 					const fotoUpload = container.querySelector(".foto-upload");
 					
-					preview.src = '';
-					preview.style.display = 'none';
+					// Restaura a imagem padrão ao limpar
+					preview.src = imagemPadrao;
+					preview.style.display = 'block';
 					fotoUrlInput.value = '';
 					if (fotoUpload) fotoUpload.value = '';
 				});
+			});
+
+			// Inicializar imagens padrão para os candidatos ao carregar a página
+			document.querySelectorAll(".candidato-form .preview").forEach(preview => {
+				if (!preview.src || preview.src === window.location.href || preview.src.trim() === '') {
+					preview.src = imagemPadrao;
+					preview.style.display = 'block';
+				}
 			});
 		</script>
 
@@ -364,6 +472,21 @@
 			<div id="resultados-regionais" class="resultados-regionais">
 			</div>
 		</div>
+
+		<!-- Seção de Gráficos -->
+		<details id="graficos-container" style="margin-top: 2rem;">
+			<summary>Estatísticas Avançadas</summary>
+			<div class="graficos-wrapper">
+				<div class="grafico-card">
+					<h3>Resultados Nacionais</h3>
+					<canvas id="grafico-pizza"></canvas>
+				</div>
+				<div class="grafico-card">
+					<h3>Resultados por Região</h3>
+					<canvas id="grafico-barras"></canvas>
+				</div>
+			</div>
+		</details>
 	</main>
 
 	<div id="modal" class="modal hidden">
@@ -374,13 +497,21 @@
 				<h2 id="modal-title"></h2>
 			</div>
 			<div class="form-group">
-				<label>Total de votos no estado:
+				<label class="label-with-help">
+					<span>Total de votos no estado:</span>
+					<div class="help-icon-container">
+						<i class="fas fa-question-circle help-icon"></i>
+						<div class="help-tooltip">
+							Os números são baseados nos votos válidos de 2022, com variações de 5% a mais ou a menos, baseado numa projeção de participação para 2026.
+						</div>
+					</div>
 					<input type="number" id="input-total-votos" min="0" step="1" />
 				</label>
 			</div>
 			<div id="candidatos-modal" class="candidatos-modal"></div>
 		</div>
 	</div>
+
 
 	<footer class="rodape">
 		<p>Projeto de portfólio desenvolvido por <strong><a href="https://gustavorabutske.github.io/portfolio/"

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Sobre - Simulador de Eleições</title>
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<style>
+		.sobre-container {
+			max-width: 900px;
+			margin: 2rem auto;
+			padding: 2rem;
+		}
+
+		.sobre-header {
+			text-align: center;
+			margin-bottom: 3rem;
+			padding-bottom: 2rem;
+			border-bottom: 2px solid var(--cor-borda);
+		}
+
+		.sobre-header h1 {
+			font-size: 2.5rem;
+			margin-bottom: 0.5rem;
+			color: var(--cor-primaria);
+		}
+
+		.sobre-header p {
+			font-size: 1.1rem;
+			color: var(--cor-texto);
+			opacity: 0.8;
+		}
+
+		.secao-sobre {
+			margin-bottom: 2.5rem;
+		}
+
+		.secao-sobre h2 {
+			font-size: 1.8rem;
+			margin-bottom: 1rem;
+			color: var(--cor-primaria);
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
+		}
+
+		.secao-sobre h2 i {
+			font-size: 1.5rem;
+		}
+
+		.secao-sobre h3 {
+			font-size: 1.3rem;
+			margin-top: 1.5rem;
+			margin-bottom: 0.8rem;
+			color: var(--cor-texto);
+		}
+
+		.secao-sobre p {
+			line-height: 1.8;
+			margin-bottom: 1rem;
+			color: var(--cor-texto);
+		}
+
+		.secao-sobre ul {
+			margin-left: 1.5rem;
+			margin-bottom: 1rem;
+		}
+
+		.secao-sobre li {
+			margin-bottom: 0.5rem;
+			line-height: 1.6;
+			color: var(--cor-texto);
+		}
+
+		.card-destaque {
+			background-color: var(--cor-superficie);
+			border-left: 4px solid var(--cor-primaria);
+			padding: 1.5rem;
+			border-radius: 8px;
+			margin: 1.5rem 0;
+			box-shadow: var(--sombra-caixa);
+		}
+
+		.card-destaque i {
+			color: var(--cor-primaria);
+			margin-right: 0.5rem;
+		}
+
+		.passo-numero {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 30px;
+			height: 30px;
+			background-color: var(--cor-primaria);
+			color: white;
+			border-radius: 50%;
+			font-weight: bold;
+			margin-right: 0.5rem;
+			font-size: 0.9rem;
+		}
+
+		.lista-passos {
+			list-style: none;
+			margin-left: 0;
+		}
+
+		.lista-passos li {
+			display: flex;
+			align-items: flex-start;
+			margin-bottom: 1.5rem;
+			padding: 1rem;
+			background-color: var(--cor-fundo);
+			border-radius: 8px;
+			border: 1px solid var(--cor-borda);
+		}
+
+		.btn-voltar {
+			display: inline-flex;
+			align-items: center;
+			gap: 0.5rem;
+			padding: 0.8rem 1.5rem;
+			background-color: var(--cor-primaria);
+			color: white;
+			text-decoration: none;
+			border-radius: 5px;
+			margin-top: 2rem;
+			transition: all 0.3s ease;
+		}
+
+		.btn-voltar:hover {
+			filter: brightness(0.9);
+			transform: translateY(-2px);
+		}
+
+		.feature-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 1.5rem;
+			margin: 1.5rem 0;
+		}
+
+		.feature-item {
+			background-color: var(--cor-superficie);
+			padding: 1.5rem;
+			border-radius: 8px;
+			border: 1px solid var(--cor-borda);
+			box-shadow: var(--sombra-caixa);
+		}
+
+		.feature-item i {
+			font-size: 2rem;
+			color: var(--cor-primaria);
+			margin-bottom: 0.5rem;
+		}
+
+		.feature-item h4 {
+			margin: 0.5rem 0;
+			color: var(--cor-texto);
+		}
+
+		.feature-item p {
+			font-size: 0.9rem;
+			margin: 0;
+			color: var(--cor-texto);
+			opacity: 0.8;
+		}
+
+		@media (max-width: 768px) {
+			.sobre-container {
+				padding: 1rem;
+			}
+
+			.sobre-header h1 {
+				font-size: 2rem;
+			}
+
+			.secao-sobre h2 {
+				font-size: 1.5rem;
+			}
+
+			.lista-passos li {
+				flex-direction: column;
+				align-items: flex-start;
+			}
+
+			.passo-numero {
+				margin-bottom: 0.5rem;
+			}
+
+			.feature-grid {
+				grid-template-columns: 1fr;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<header class="header">
+		<div class="container">
+			<h1>Simulador de eleições</h1>
+			<div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+				<a href="index.html" class="btn-header" title="Voltar para o Simulador">
+					<i class="fas fa-arrow-left"></i> <span class="btn-text">Voltar</span>
+				</a>
+				<div class="icons">
+					<a href="https://github.com/gustavorabutske" target="_blank"><i class="fab fa-github"></i></a>
+				</div>
+				<button id="theme-toggle" class="theme-toggle" title="Alternar Tema Escuro">🌙</button>
+			</div>
+		</div>
+	</header>
+
+	<main class="container">
+		<div class="sobre-container">
+			<div class="sobre-header">
+				<h1><i class="fas fa-info-circle"></i> Sobre o Simulador</h1>
+				<p>Ferramenta interativa para simular cenários eleitorais brasileiros</p>
+			</div>
+
+			<section class="secao-sobre">
+				<h2><i class="fas fa-rocket"></i> Início Rápido</h2>
+				<p>O Simulador de Eleições permite criar e visualizar diferentes cenários eleitorais de forma intuitiva e profissional.</p>
+				
+				<ul class="lista-passos">
+					<li>
+						<span class="passo-numero">1</span>
+						<div>
+							<strong>Configure a Simulação</strong>
+							<p>Escolha entre 1º Turno ou 2º Turno e defina os candidatos com nome, partido, cor e foto.</p>
+						</div>
+					</li>
+					<li>
+						<span class="passo-numero">2</span>
+						<div>
+							<strong>Defina os Votos por Estado</strong>
+							<p>Clique em qualquer estado do mapa para abrir o modal e ajustar os percentuais de votos usando os sliders.</p>
+						</div>
+					</li>
+					<li>
+						<span class="passo-numero">3</span>
+						<div>
+							<strong>Visualize os Resultados</strong>
+							<p>Os resultados são atualizados em tempo real: totais nacionais, por região, gráficos e análises estatísticas.</p>
+						</div>
+					</li>
+					<li>
+						<span class="passo-numero">4</span>
+						<div>
+							<strong>Exporte ou Importe</strong>
+							<p>Na seção de configuração, você pode exportar sua simulação para compartilhar ou importar uma simulação existente.</p>
+						</div>
+					</li>
+				</ul>
+			</section>
+
+			<section class="secao-sobre">
+				<h2><i class="fas fa-map-marked-alt"></i> Como Usar o Mapa</h2>
+				<div class="card-destaque">
+					<p><i class="fas fa-mouse-pointer"></i> <strong>Desktop:</strong> Passe o mouse sobre um estado para ver informações rápidas. Clique para editar os votos.</p>
+					<p><i class="fas fa-mobile-alt"></i> <strong>Mobile:</strong> Toque uma vez para ver informações. Toque novamente para editar os votos.</p>
+				</div>
+				<p>Use a barra de busca acima do mapa para encontrar rapidamente qualquer estado digitando seu nome ou sigla.</p>
+			</section>
+
+			<section class="secao-sobre">
+				<h2><i class="fas fa-chart-bar"></i> Estatísticas Avançadas</h2>
+				<p>Na seção "Estatísticas Avançadas" você encontra:</p>
+				<div class="feature-grid">
+					<div class="feature-item">
+						<i class="fas fa-chart-pie"></i>
+						<h4>Gráfico de Pizza</h4>
+						<p>Visualização dos resultados nacionais em formato circular</p>
+					</div>
+					<div class="feature-item">
+						<i class="fas fa-chart-bar"></i>
+						<h4>Gráfico de Barras</h4>
+						<p>Comparação dos resultados por região geográfica</p>
+					</div>
+					<div class="feature-item">
+						<i class="fas fa-calculator"></i>
+						<h4>Análise Estatística</h4>
+						<p>Dados detalhados sobre vencedores, margens e estados decisivos</p>
+					</div>
+				</div>
+			</section>
+
+			<section class="secao-sobre">
+				<h2><i class="fas fa-cog"></i> Funcionalidades Principais</h2>
+				<h3><i class="fas fa-users"></i> Candidatos Pré-definidos</h3>
+				<p>Use o menu "Candidato pré-definido" para preencher automaticamente informações de candidatos conhecidos, incluindo foto e cor de campanha.</p>
+
+				<h3><i class="fas fa-save"></i> Salvamento Automático</h3>
+				<p>Todas as alterações são salvas automaticamente no navegador. Você pode continuar de onde parou a qualquer momento.</p>
+
+				<h3><i class="fas fa-download"></i> Exportar e Importar</h3>
+				<p>Na seção de configuração, exporte sua simulação como arquivo JSON para compartilhar ou fazer backup. Importe simulações de outros usuários.</p>
+
+				<h3><i class="fas fa-moon"></i> Modo Escuro</h3>
+				<p>Use o botão de tema no header para alternar entre modo claro e escuro. Sua preferência é salva automaticamente.</p>
+			</section>
+
+			<section class="secao-sobre">
+				<h2><i class="fas fa-lightbulb"></i> Dicas de Uso</h2>
+				<ul>
+					<li><strong>Total de Votos:</strong> Os números são baseados nos votos válidos de 2022, com variações de 5% para projeção de 2026.</li>
+					<li><strong>Percentuais:</strong> Os sliders garantem que a soma não ultrapasse 100%. Ajuste livremente para criar diferentes cenários.</li>
+					<li><strong>Resetar:</strong> Use o botão "Resetar" na configuração para limpar todos os dados e começar uma nova simulação.</li>
+					<li><strong>Resultados Regionais:</strong> Veja os resultados agrupados por região (Norte, Nordeste, Centro-Oeste, Sudeste, Sul) para análises mais detalhadas.</li>
+				</ul>
+			</section>
+
+			<section class="secao-sobre">
+				<h2><i class="fas fa-question-circle"></i> Perguntas Frequentes</h2>
+				
+				<h3>Os dados são reais?</h3>
+				<p>Os totais de votos por estado são baseados em dados reais de 2022, mas os percentuais de cada candidato são definidos por você na simulação.</p>
+
+				<h3>Posso adicionar mais candidatos?</h3>
+				<p>Atualmente, o simulador suporta 2 candidatos principais no 2º turno ou 2 candidatos + "Outros" no 1º turno.</p>
+
+				<h3>Como compartilhar minha simulação?</h3>
+				<p>Use a função "Exportar Simulação" na seção de configuração para gerar um arquivo JSON que pode ser compartilhado e importado por outros usuários.</p>
+			</section>
+
+			<a href="index.html" class="btn-voltar">
+				<i class="fas fa-arrow-left"></i> Voltar para o Simulador
+			</a>
+		</div>
+	</main>
+
+	<footer class="rodape">
+		<p>Projeto de portfólio desenvolvido por <strong><a href="https://gustavorabutske.github.io/portfolio/"
+					target="_blank">Rabutske</a></strong> 💻</p>
+	</footer>
+
+	<script>
+		// Alternar tema
+		function alternarTema() {
+			document.body.classList.toggle('dark-mode');
+			const isDark = document.body.classList.contains('dark-mode');
+			const themeToggle = document.getElementById('theme-toggle');
+			if (themeToggle) {
+				themeToggle.textContent = isDark ? '☀️' : '🌙';
+			}
+			localStorage.setItem('temaEscuro', isDark);
+		}
+
+		// Carrega tema salvo
+		if (localStorage.getItem('temaEscuro') === 'true') {
+			document.body.classList.add('dark-mode');
+			const themeToggle = document.getElementById('theme-toggle');
+			if (themeToggle) {
+				themeToggle.textContent = '☀️';
+			}
+		}
+
+		// Event listener para o botão de tema
+		const themeToggle = document.getElementById('theme-toggle');
+		if (themeToggle) {
+			themeToggle.addEventListener('click', alternarTema);
+		}
+	</script>
+</body>
+
+</html>
